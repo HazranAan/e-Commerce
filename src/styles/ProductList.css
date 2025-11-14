@@ -1,0 +1,226 @@
+/* Layout keseluruhan product page */
+.product-layout {
+  min-height: 100vh;
+}
+
+/* LEFT SIDEBAR PANEL */
+.sidebar-panel {
+  background: #fff7ec;
+  border-radius: 1rem;
+  padding: 20px 18px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  position: sticky;
+  top: 80px;
+}
+
+.sidebar-title {
+  font-weight: 700;
+  color: #4b2e19;
+  margin-bottom: 5px;
+}
+
+.sidebar-subtitle {
+  font-size: 0.9rem;
+  color: #8a7663;
+  margin-bottom: 15px;
+}
+
+.sidebar-label {
+  font-weight: 600;
+  color: #5a3f2e;
+  font-size: 0.9rem;
+}
+
+/* SEARCH INPUT */
+.search-input {
+  border-radius: 0.75rem;
+  border: 1px solid #e0c5a6;
+  padding: 8px 12px;
+}
+
+.search-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 0.1rem rgba(111, 78, 55, 0.3);
+  border-color: #6f4e37;
+}
+
+/* CATEGORY BUTTONS */
+.category-btn {
+  background: #f1e0cf;
+  border: none;
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  color: #5a3f2e;
+  transition: all 0.2s ease;
+}
+
+.category-btn:hover {
+  background: #e0c5a6;
+}
+
+.category-btn.active {
+  background: #6f4e37;
+  color: #fff;
+}
+
+/* MINI CART SUMMARY */
+.mini-cart {
+  border-top: 1px solid #e0c5a6;
+  padding-top: 12px;
+  margin-top: 12px;
+}
+
+.mini-cart-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #4b2e19;
+  margin-bottom: 8px;
+}
+
+/* TITLE AT RIGHT CONTENT */
+.menu-title {
+  font-weight: 700;
+  color: #4b2e19;
+  margin-bottom: 5px;
+}
+
+.menu-subtitle {
+  color: #7b6a5a;
+  margin-bottom: 25px;
+}
+
+/* MODERN PRODUCT CARD */
+.modern-card {
+  border-radius: 1rem;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  background: #ffffff;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  border: none;
+}
+
+.modern-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* IMAGE WRAPPER */
+.image-wrapper {
+  position: relative;
+}
+
+.product-img {
+  height: 550px; 
+  object-fit: cover;
+}
+
+/* CATEGORY BADGE ON IMAGE */
+.category-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: #6f4e37;
+  color: white;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* TEXT STYLING CARD */
+.product-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #3a2d23;
+}
+
+.product-price {
+  color: #6a4f3a;
+  font-size: 1.1rem;
+  margin-bottom: 15px;
+}
+
+/* CUSTOM BUTTON ADD TO CART */
+.btn-custom {
+  background: #6f4e37;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  transition: 0.3s ease;
+}
+
+.btn-custom:hover {
+  background: #5a3f2e;
+  color: #fff;
+}
+
+
+/* ===== TOP FILTER BAR (NO SIDEBAR) ===== */
+
+.filters-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  background: #ffffff;
+  padding: 10px 16px;
+  border-radius: 14px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+}
+
+.filters-categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Category pills on top */
+.category-pill {
+  background: #f1e0cf;
+  border: none;
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 0.9rem;
+  color: #5a3f2e;
+  transition: all 0.2s ease;
+}
+
+.category-pill:hover {
+  background: #e0c5a6;
+}
+
+.category-pill.active {
+  background: #6f4e37;
+  color: #fff;
+}
+
+/* Search on top */
+.filters-search {
+  min-width: 200px;
+  max-width: 260px;
+  flex: 1;
+}
+
+.search-input-top {
+  border-radius: 999px;
+  border: 1px solid #e0c5a6;
+  padding: 6px 14px;
+}
+
+.search-input-top:focus {
+  outline: none;
+  box-shadow: 0 0 0 0.1rem rgba(111, 78, 55, 0.25);
+  border-color: #6f4e37;
+}
+
+/* Small cart summary text at top right */
+.top-cart-summary {
+  font-size: 0.85rem;
+  color: #7b6a5a;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}

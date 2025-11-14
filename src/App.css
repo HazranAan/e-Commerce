@@ -1,0 +1,189 @@
+/* ===== WELCOME PAGE NEW STYLE ===== */
+
+/* -------------------------------
+   🌟 MODERN WELCOME PAGE
+-------------------------------- */
+
+.welcome-container {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background: linear-gradient(135deg, #f8e7d1, #f3d7c2, #fefaf5);
+  background-size: cover;
+  padding: 20px;
+}
+
+.welcome-glass {
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(15px);
+  border-radius: 25px;
+  padding: 45px 55px;
+  text-align: center;
+  max-width: 420px;
+  width: 100%;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+  animation: fadeUp 0.9s ease;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.welcome-logo {
+  width: 150px;
+  height: 150px;
+  object-fit: contain;
+  margin-bottom: 15px;
+}
+
+.welcome-heading {
+  font-size: 2.2rem;
+  font-weight: 800;
+  margin-bottom: 10px;
+  color: #4b2e19;
+  letter-spacing: 0.5px;
+}
+
+.welcome-text {
+  font-size: 1.15rem;
+  color: #6a4d38;
+  margin-bottom: 30px;
+}
+
+.welcome-start-btn {
+  background: #6f4e37;
+  color: white;
+  padding: 14px 30px;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  transition: 0.25s ease;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(111, 78, 55, 0.35);
+}
+
+.welcome-start-btn:hover {
+  background: #5a3f2e;
+  transform: translateY(-3px);
+}
+
+/* Animation */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(25px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #fdf6e3;
+}
+
+/* Navbar tweak sikit */
+.navbar-brand {
+  font-weight: 700;
+}
+
+/* AUTH (Login / Signup) page */
+.auth-page {
+  min-height: calc(100vh - 56px); /* minus navbar height */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.auth-card {
+  background: #ffffff;
+  padding: 30px 28px;
+  border-radius: 1rem;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+  text-align: center;
+}
+
+.auth-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.auth-tab {
+  flex: 1;
+  border: none;
+  background: #f0e0cf;
+  padding: 8px 0;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.auth-tab.active {
+  background: #6f4e37;
+  color: #ffffff;
+}
+
+/* CART PAGE STYLES */
+
+.cart-page {
+  min-height: 80vh;
+}
+
+.cart-title {
+  font-weight: 700;
+  color: #4b2e19;
+  margin-bottom: 4px;
+}
+
+.cart-subtitle {
+  color: #7b6a5a;
+  font-size: 0.95rem;
+}
+
+/* Empty cart card */
+.empty-cart-card {
+  border-radius: 1rem;
+  border: none;
+  background: #fffdf7;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+}
+
+/* Cart items list */
+.cart-items-card {
+  border-radius: 1rem;
+  border: none;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+}
+
+.cart-item {
+  border: 0;
+  border-bottom: 1px solid #f0e2d4;
+}
+
+.cart-item:last-child {
+  border-bottom: 0;
+}
+
+.cart-item-img {
+  width: 50px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 0.75rem;
+}
+
+/* Summary panel */
+.cart-summary-card {
+  border-radius: 1rem;
+  border: none;
+  background: #fff7ec;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+}
