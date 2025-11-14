@@ -1,4 +1,3 @@
-// src/components/ProductList.tsx
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { products } from "../products";
@@ -9,26 +8,33 @@ interface Props {
   handleAddToCart: (product: Product) => void;
   isLoggedIn: boolean;
   cart: Product[];
+  selectedCategory?: string; // optional supaya tak rosak kalau tak dihantar
 }
 
-const categories = ["All", "Coffee", "Tea", "Special"];
-
-const ProductList = ({ handleAddToCart, isLoggedIn, cart }: Props) => {
+const ProductList = ({
+  handleAddToCart,
+  isLoggedIn,
+  cart,
+  selectedCategory,
+}: Props) => {
   const navigate = useNavigate();
-  const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [searchTerm, setSearchTerm] = useState<string>("");
+
+  // fallback: kalau selectedCategory tak ada, assume "All"
+  const effectiveCategory =
+    selectedCategory && selectedCategory !== "" ? selectedCategory : "All";
 
   const filteredProducts = products.filter((product) => {
     const matchCategory =
-      selectedCategory === "All" || product.category === selectedCategory;
+      effectiveCategory === "All" || product.category === effectiveCategory;
+
+    const lowerSearch = searchTerm.toLowerCase();
     const matchSearch =
-      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.description.toLowerCase().includes(searchTerm.toLowerCase());
+      product.name.toLowerCase().includes(lowerSearch) ||
+      product.description.toLowerCase().includes(lowerSearch);
+
     return matchCategory && matchSearch;
   });
-
-  const totalItems = cart.length;
-  const totalPrice = cart.reduce((acc, item) => acc + item.price, 0);
 
   const handleClickAdd = (product: Product) => {
     if (!isLoggedIn) {
@@ -41,47 +47,23 @@ const ProductList = ({ handleAddToCart, isLoggedIn, cart }: Props) => {
 
   return (
     <div className="container mt-4">
-      {/* TITLE & SMALL SUMMARY */}
-      <div className="d-flex justify-content-between align-items-center flex-wrap mb-3">
-        <div>
-          <h2 className="menu-title">☕ Drinks Menu</h2>
-          <p className="menu-subtitle">
-            Pick your favourite drink and add it to your cart.
-          </p>
-        </div>
-        <div className="top-cart-summary">
-          <span>{totalItems} item(s)</span>
-          <span>·</span>
-          <span>Total RM {totalPrice.toFixed(2)}</span>
-        </div>
+      {/* TITLE */}
+      <div className="mb-3">
+        <h2 className="menu-title">☕ Drinks Menu</h2>
+        <p className="menu-subtitle">
+          Pick your favourite drink and add it to your cart.
+        </p>
       </div>
 
-      {/* TOP FILTER BAR – CATEGORIES + SEARCH */}
-      <div className="filters-bar">
-        <div className="filters-categories">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              type="button"
-              className={`btn category-pill ${
-                selectedCategory === cat ? "active" : ""
-              }`}
-              onClick={() => setSelectedCategory(cat)}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-
-        <div className="filters-search">
-          <input
-            type="text"
-            className="form-control search-input-top"
-            placeholder="Search drinks..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
+      {/* SEARCH BAR BAWAH NAVBAR */}
+      <div className="search-bar-row">
+        <input
+          type="text"
+          className="form-control search-input-top"
+          placeholder="Search drinks..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
       </div>
 
       {/* PRODUCT GRID */}
@@ -122,9 +104,7 @@ const ProductList = ({ handleAddToCart, isLoggedIn, cart }: Props) => {
         ))}
       </div>
 
-      <Link to="/cart" className="btn btn-warning mt-2">
-        View Cart
-      </Link>
+      {/* BUTANG VIEW CART BAWAH – DAH DIBUANG */}
     </div>
   );
 };

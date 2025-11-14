@@ -1,9 +1,3 @@
-/* ===== WELCOME PAGE NEW STYLE ===== */
-
-/* -------------------------------
-   🌟 MODERN WELCOME PAGE
--------------------------------- */
-
 .welcome-container {
   height: 100vh;
   width: 100%;
@@ -80,7 +74,6 @@
   }
 }
 
-
 body {
   margin: 0;
   font-family: Arial, sans-serif;
@@ -92,45 +85,6 @@ body {
   font-weight: 700;
 }
 
-/* AUTH (Login / Signup) page */
-.auth-page {
-  min-height: calc(100vh - 56px); /* minus navbar height */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.auth-card {
-  background: #ffffff;
-  padding: 30px 28px;
-  border-radius: 1rem;
-  max-width: 400px;
-  width: 100%;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
-  text-align: center;
-}
-
-.auth-tabs {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-}
-
-.auth-tab {
-  flex: 1;
-  border: none;
-  background: #f0e0cf;
-  padding: 8px 0;
-  border-radius: 999px;
-  font-weight: 600;
-  font-size: 0.9rem;
-  cursor: pointer;
-}
-
-.auth-tab.active {
-  background: #6f4e37;
-  color: #ffffff;
-}
 
 /* CART PAGE STYLES */
 
@@ -186,4 +140,32 @@ body {
   border: none;
   background: #fff7ec;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+}
+
+/* ===== NAVBAR CATEGORIES IN CENTER ===== */
+
+.nav-categories {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.nav-cat-pill {
+  background: #f1e0cf;
+  border: none;
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 0.9rem;
+  color: #5a3f2e;
+  transition: all 0.2s ease;
+}
+
+.nav-cat-pill:hover {
+  background: #e0c5a6;
+}
+
+.nav-cat-pill.active {
+  background: #6f4e37;
+  color: #fff;
 }

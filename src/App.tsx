@@ -1,3 +1,4 @@
+// src/App.tsx
 import { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import ProductList from "./components/ProductList";
@@ -7,10 +8,13 @@ import LoginPage from "./components/LoginPage";
 import { Product } from "./types";
 import "./App.css";
 
+const categories = ["All", "Coffee", "Tea", "Special"];
+
 function App() {
   const [showWelcome, setShowWelcome] = useState(true);
   const [cart, setCart] = useState<Product[]>([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<string>("All");
 
   const handleAddToCart = (product: Product) => {
     setCart((prev) => [...prev, product]);
@@ -26,10 +30,10 @@ function App() {
 
   const handleLogout = () => {
     setIsLoggedIn(false);
-    setCart([]); // optional: kosongkan cart bila logout
+    setCart([]); // optional: clear cart when logout
   };
 
-  // --- WELCOME SCREEN (MASIH KEKAL) ---
+  // WELCOME PAGE
   if (showWelcome) {
     return (
       <div className="welcome-container">
@@ -55,21 +59,38 @@ function App() {
     );
   }
 
-  // --- LEPAS WELCOME: MASUK ROUTER + NAVBAR + PAGE2 ---
+  // MAIN APP WITH NAVBAR + ROUTES
   return (
     <Router>
       <div>
-        {/* NAVBAR ATAS SAMA UNTUK SEMUA PAGE */}
+        {/* NAVBAR */}
         <nav className="navbar navbar-light bg-light px-3">
+          {/* Left: Brand */}
           <Link to="/" className="navbar-brand">
             My Drinks Café
           </Link>
 
+          {/* Middle: Categories */}
+          <div className="nav-categories">
+            {["All", "Coffee", "Tea", "Special"].map((cat) => (
+              <button
+                key={cat}
+                type="button"
+                className={`nav-cat-pill ${
+                  selectedCategory === cat ? "active" : ""
+                }`}
+                onClick={() => setSelectedCategory(cat)}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+
+          {/* Right: Cart + Login/Logout */}
           <div className="d-flex align-items-center gap-2">
             <Link to="/cart" className="btn btn-outline-secondary btn-sm">
               Cart ({cart.length})
             </Link>
-
             {isLoggedIn ? (
               <button
                 className="btn btn-outline-danger btn-sm"
@@ -94,6 +115,7 @@ function App() {
                 handleAddToCart={handleAddToCart}
                 isLoggedIn={isLoggedIn}
                 cart={cart}
+                selectedCategory={selectedCategory}
               />
             }
           />
