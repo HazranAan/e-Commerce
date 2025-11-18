@@ -1,6 +1,7 @@
-import { useState } from "react";
+// src/components/ProductList.tsx
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { products } from "../products";
+import { getProducts } from "../api";
 import { Product } from "../types";
 import "../styles/ProductList.css";
 
@@ -8,7 +9,7 @@ interface Props {
   handleAddToCart: (product: Product) => void;
   isLoggedIn: boolean;
   cart: Product[];
-  selectedCategory?: string; // optional supaya tak rosak kalau tak dihantar
+  selectedCategory?: string;
 }
 
 const ProductList = ({
@@ -18,20 +19,44 @@ const ProductList = ({
   selectedCategory,
 }: Props) => {
   const navigate = useNavigate();
-  const [searchTerm, setSearchTerm] = useState<string>("");
 
-  // fallback: kalau selectedCategory tak ada, assume "All"
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [productList, setProductList] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // 📡 Call API sekali bila component mount
+  useEffect(() => {
+    const load = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const data = await getProducts(); // 👉 ambil semua product dari API
+        setProductList(data);
+      } catch (err) {
+        console.error(err);
+        setError("Failed to load products.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    load();
+  }, []);
+
   const effectiveCategory =
     selectedCategory && selectedCategory !== "" ? selectedCategory : "All";
 
-  const filteredProducts = products.filter((product) => {
+  // Filter ikut category + search
+  const filteredProducts = productList.filter((product) => {
     const matchCategory =
       effectiveCategory === "All" || product.category === effectiveCategory;
 
     const lowerSearch = searchTerm.toLowerCase();
     const matchSearch =
       product.name.toLowerCase().includes(lowerSearch) ||
-      product.description.toLowerCase().includes(lowerSearch);
+      (product.description || "").toLowerCase().includes(lowerSearch);
 
     return matchCategory && matchSearch;
   });
@@ -55,7 +80,7 @@ const ProductList = ({
         </p>
       </div>
 
-      {/* SEARCH BAR BAWAH NAVBAR */}
+      {/* SEARCH BAR */}
       <div className="search-bar-row">
         <input
           type="text"
@@ -66,11 +91,15 @@ const ProductList = ({
         />
       </div>
 
-      {/* PRODUCT GRID */}
-      {filteredProducts.length === 0 && (
+      {/* LOADING / ERROR STATE */}
+      {loading && <p className="text-muted mt-3">Loading drinks...</p>}
+      {error && <p className="text-danger mt-3">{error}</p>}
+
+      {!loading && filteredProducts.length === 0 && !error && (
         <p className="text-muted mt-3">No drinks found. Try another search.</p>
       )}
 
+      {/* PRODUCT GRID */}
       <div className="row mt-3">
         {filteredProducts.map((product) => (
           <div key={product.id} className="col-md-4 mb-4">
@@ -91,7 +120,9 @@ const ProductList = ({
               </Link>
               <div className="card-body text-center">
                 <h5 className="product-title">{product.name}</h5>
-                <p className="product-price">RM {product.price.toFixed(2)}</p>
+                <p className="product-price">
+                  RM {Number(product.price).toFixed(2)}
+                </p>
                 <button
                   className="btn btn-custom"
                   onClick={() => handleClickAdd(product)}
@@ -103,8 +134,6 @@ const ProductList = ({
           </div>
         ))}
       </div>
-
-      {/* BUTANG VIEW CART BAWAH – DAH DIBUANG */}
     </div>
   );
 };
