@@ -1,20 +1,52 @@
 // src/App.tsx
 import { useState } from "react";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Link,
+  Navigate,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
+
 import ProductList from "./components/ProductList";
 import ProductDetail from "./components/ProductDetail";
 import CartPage from "./components/CartPage";
 import LoginPage from "./components/LoginPage";
+import AdminProducts from "./pages/AdminProducts";
+
 import { Product } from "./types";
 import "./App.css";
 
 const categories = ["All", "Coffee", "Tea", "Special"];
 
-function App() {
-  const [showWelcome, setShowWelcome] = useState(true);
+// Protect admin route
+function RequireAuth({
+  isLoggedIn,
+  children,
+}: {
+  isLoggedIn: boolean;
+  children: JSX.Element;
+}) {
+  const location = useLocation();
+  if (!isLoggedIn) {
+    return <Navigate to="/login" replace state={{ from: location }} />;
+  }
+  return children;
+}
+
+function AppShell() {
   const [cart, setCart] = useState<Product[]>([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
+  const [showWelcome, setShowWelcome] = useState(true);
+
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const isAdminPage = location.pathname.startsWith("/admin");
+  const isRoot = location.pathname === "/";
 
   const handleAddToCart = (product: Product) => {
     setCart((prev) => [...prev, product]);
@@ -30,11 +62,14 @@ function App() {
 
   const handleLogout = () => {
     setIsLoggedIn(false);
-    setCart([]); // optional: clear cart when logout
+    setCart([]);
   };
 
-  // WELCOME PAGE
-  if (showWelcome) {
+  // WELCOME hanya bila:
+  // - showWelcome true
+  // - dekat halaman root ("/")
+  // - bukan admin page
+  if (showWelcome && isRoot && !isAdminPage) {
     return (
       <div className="welcome-container">
         <div className="welcome-glass">
@@ -45,12 +80,14 @@ function App() {
           />
 
           <h1 className="welcome-heading">Hi, Welcome! 👋</h1>
-
           <p className="welcome-text">Ready to explore our drinks menu?</p>
 
           <button
             className="welcome-start-btn"
-            onClick={() => setShowWelcome(false)}
+            onClick={() => {
+              setShowWelcome(false);
+              navigate("/"); // pastikan pergi ke /
+            }}
           >
             Let’s Get Started
           </button>
@@ -59,20 +96,18 @@ function App() {
     );
   }
 
-  // MAIN APP WITH NAVBAR + ROUTES
   return (
-    <Router>
-      <div>
-        {/* NAVBAR */}
-        <nav className="navbar navbar-light bg-light px-3">
-          {/* Left: Brand */}
-          <Link to="/" className="navbar-brand">
-            My Drinks Café
-          </Link>
+    <>
+      {/* NAVBAR */}
+      <nav className="navbar navbar-light bg-light px-3">
+        <Link to="/" className="navbar-brand">
+          My Drinks Café
+        </Link>
 
-          {/* Middle: Categories */}
+        {/* Category pill hanya untuk customer page */}
+        {!isAdminPage && (
           <div className="nav-categories">
-            {["All", "Coffee", "Tea", "Special"].map((cat) => (
+            {categories.map((cat) => (
               <button
                 key={cat}
                 type="button"
@@ -85,62 +120,81 @@ function App() {
               </button>
             ))}
           </div>
+        )}
 
-          {/* Right: Cart + Login/Logout */}
-          <div className="d-flex align-items-center gap-2">
+        <div className="d-flex align-items-center gap-2">
+          {!isAdminPage && (
             <Link to="/cart" className="btn btn-outline-secondary btn-sm">
               Cart ({cart.length})
             </Link>
-            {isLoggedIn ? (
-              <button
-                className="btn btn-outline-danger btn-sm"
-                onClick={handleLogout}
-              >
-                Logout
-              </button>
-            ) : (
-              <Link to="/login" className="btn btn-primary btn-sm">
-                Login / Sign Up
-              </Link>
-            )}
-          </div>
-        </nav>
+          )}
 
-        {/* ROUTES */}
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <ProductList
-                handleAddToCart={handleAddToCart}
-                isLoggedIn={isLoggedIn}
-                cart={cart}
-                selectedCategory={selectedCategory}
-              />
-            }
-          />
-          <Route
-            path="/product/:id"
-            element={
-              <ProductDetail
-                handleAddToCart={handleAddToCart}
-                isLoggedIn={isLoggedIn}
-              />
-            }
-          />
-          <Route
-            path="/cart"
-            element={
-              <CartPage
-                cart={cart}
-                handleRemoveFromCart={handleRemoveFromCart}
-              />
-            }
-          />
-          <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
-        </Routes>
-      </div>
-    </Router>
+          <Link to="/admin/products" className="btn btn-warning btn-sm">
+            Admin
+          </Link>
+
+          {isLoggedIn ? (
+            <button
+              className="btn btn-outline-danger btn-sm"
+              onClick={handleLogout}
+            >
+              Logout
+            </button>
+          ) : (
+            <Link to="/login" className="btn btn-primary btn-sm">
+              Login / Sign Up
+            </Link>
+          )}
+        </div>
+      </nav>
+
+      {/* ROUTES */}
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <ProductList
+              handleAddToCart={handleAddToCart}
+              isLoggedIn={isLoggedIn}
+              cart={cart}
+              selectedCategory={selectedCategory}
+            />
+          }
+        />
+        <Route
+          path="/product/:id"
+          element={
+            <ProductDetail
+              handleAddToCart={handleAddToCart}
+              isLoggedIn={isLoggedIn}
+            />
+          }
+        />
+        <Route
+          path="/cart"
+          element={
+            <CartPage cart={cart} handleRemoveFromCart={handleRemoveFromCart} />
+          }
+        />
+        <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
+        <Route
+          path="/admin/products"
+          element={
+            <RequireAuth isLoggedIn={isLoggedIn}>
+              <AdminProducts />
+            </RequireAuth>
+          }
+        />
+      </Routes>
+    </>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AppShell />
+    </BrowserRouter>
   );
 }
 
