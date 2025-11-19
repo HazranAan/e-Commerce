@@ -18,6 +18,8 @@ export default function AdminProducts() {
     name: "",
     price: "",
     description: "",
+    image: "",
+    category: "",
   });
 
   const [editingId, setEditingId] = useState<number | null>(null);
@@ -49,10 +51,12 @@ export default function AdminProducts() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    const payload = {
+    const payload: Omit<Product, "id"> = {
       name: form.name,
       price: Number(form.price),
       description: form.description,
+      image: form.image,
+      category: form.category || "Others",
     };
 
     try {
@@ -60,16 +64,22 @@ export default function AdminProducts() {
       setError(null);
 
       if (editingId === null) {
-        const newProduct = await createProduct(payload as any);
+        const newProduct = await createProduct(payload);
         setProducts((prev) => [...prev, newProduct]);
       } else {
-        const updated = await updateProduct(editingId, payload as any);
+        const updated = await updateProduct(editingId, payload);
         setProducts((prev) =>
           prev.map((p) => (p.id === editingId ? updated : p))
         );
       }
 
-      setForm({ name: "", price: "", description: "" });
+      setForm({
+        name: "",
+        price: "",
+        description: "",
+        image: "",
+        category: "",
+      });
       setEditingId(null);
     } catch (err: any) {
       setError(err.message || "Failed to save product");
@@ -99,6 +109,19 @@ export default function AdminProducts() {
       name: p.name,
       price: String(p.price),
       description: p.description || "",
+      image: p.image || "",
+      category: p.category || "",
+    });
+  }
+
+  function handleCancelEdit() {
+    setEditingId(null);
+    setForm({
+      name: "",
+      price: "",
+      description: "",
+      image: "",
+      category: "",
     });
   }
 
@@ -130,6 +153,8 @@ export default function AdminProducts() {
                     <th>ID</th>
                     <th>Nama</th>
                     <th>Harga</th>
+                    <th>Category</th>
+                    <th>Image</th>
                     <th>Deskripsi</th>
                     <th>Action</th>
                   </tr>
@@ -140,6 +165,21 @@ export default function AdminProducts() {
                       <td>{p.id}</td>
                       <td>{p.name}</td>
                       <td className="admin-price">RM {p.price}</td>
+                      <td>{p.category}</td>
+                      <td>
+                        {p.image && (
+                          <img
+                            src={p.image}
+                            alt={p.name}
+                            style={{
+                              width: "60px",
+                              height: "60px",
+                              objectFit: "cover",
+                              borderRadius: "8px",
+                            }}
+                          />
+                        )}
+                      </td>
                       <td>{p.description}</td>
                       <td>
                         <button
@@ -160,7 +200,7 @@ export default function AdminProducts() {
 
                   {products.length === 0 && !loading && (
                     <tr>
-                      <td colSpan={5} className="admin-empty">
+                      <td colSpan={7} className="admin-empty">
                         Tiada menu lagi. Tambah menu pertama anda di sebelah
                         kanan 👈
                       </td>
@@ -210,6 +250,28 @@ export default function AdminProducts() {
               />
             </label>
 
+            <label>
+              Image URL:
+              <input
+                className="admin-input"
+                name="image"
+                value={form.image}
+                onChange={handleChange}
+                placeholder="https://contoh.com/gambar.jpg"
+              />
+            </label>
+
+            <label>
+              Category:
+              <input
+                className="admin-input"
+                name="category"
+                value={form.category}
+                onChange={handleChange}
+                placeholder="Contoh: Coffee / Tea / Special"
+              />
+            </label>
+
             <div className="admin-form-actions">
               <button
                 type="submit"
@@ -222,10 +284,7 @@ export default function AdminProducts() {
                 <button
                   type="button"
                   className="btn btn-outline"
-                  onClick={() => {
-                    setEditingId(null);
-                    setForm({ name: "", price: "", description: "" });
-                  }}
+                  onClick={handleCancelEdit}
                 >
                   Cancel
                 </button>

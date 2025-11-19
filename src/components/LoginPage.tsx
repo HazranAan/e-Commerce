@@ -1,71 +1,147 @@
-// src/components/LoginPage.tsx
-import { useState, FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
-import "../App.css";
+// src/LoginPage.tsx
+import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import "./LoginPage.css";
 
-interface Props {
-  onLogin: () => void;
-}
+type LoginPageProps = {
+  onLogin: (isAdmin: boolean) => void;
+};
 
-const LoginPage = ({ onLogin }: Props) => {
-  const [email, setEmail] = useState("");
+export default function LoginPage({ onLogin }: LoginPageProps) {
+  const [mode, setMode] = useState<"login" | "signup">("login");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
+
   const navigate = useNavigate();
+  const location = useLocation() as any;
+  const from = location.state?.from?.pathname || "/";
 
-  const handleSubmit = (e: FormEvent) => {
+  function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setError("");
 
-    if (!email.trim() || !password.trim()) {
-      alert("Please fill in email and password");
-      return;
+    if (mode === "login") {
+      // LOGIN MODE
+      if (username === "admin") {
+        if (password !== "admin123") {
+          setError("Wrong admin password (hint: admin123)");
+          return;
+        }
+        onLogin(true); // admin
+      } else {
+        // user biasa
+        onLogin(false);
+      }
+    } else {
+      // SIGNUP MODE (simple frontend-only)
+      if (password.length < 4) {
+        setError("Password at least 4 characters");
+        return;
+      }
+      if (password !== confirmPassword) {
+        setError("Password and confirm password not same");
+        return;
+      }
+
+      // Anggap signup berjaya -> login sebagai user biasa
+      onLogin(false);
     }
 
-    onLogin();
-    navigate(-1);
-  };
+    navigate(from, { replace: true });
+  }
+
+  function handleBack() {
+    navigate("/");
+  }
 
   return (
-    <div className="login-page">
-      <div className="login-card">
-        <h3 className="mb-3">Login / Sign Up</h3>
-        <p className="text-muted mb-4">
-          Please login to start ordering your favourite drinks.
-        </p>
+    <div className="auth-page">
+      <div className="auth-overlay" />
 
-        <form onSubmit={handleSubmit}>
-          <div className="mb-3 text-start">
-            <label className="form-label">Email</label>
+      <button className="auth-back-btn" onClick={handleBack}>
+        ← Back to menu
+      </button>
+
+      <div className="auth-card">
+        <h1 className="auth-brand">My Drinks Café</h1>
+
+        <div className="auth-toggle">
+          <button
+            type="button"
+            className={`auth-tab ${mode === "login" ? "active" : ""}`}
+            onClick={() => {
+              setMode("login");
+              setError("");
+            }}
+          >
+            Login
+          </button>
+          <button
+            type="button"
+            className={`auth-tab ${mode === "signup" ? "active" : ""}`}
+            onClick={() => {
+              setMode("signup");
+              setError("");
+            }}
+          >
+            Sign Up
+          </button>
+        </div>
+
+        {mode === "login" && (
+          <p className="auth-helper-text">
+            Masuk sebagai <strong>admin</strong> guna:
+            <br />
+            username: <code>admin</code>, password: <code>admin123</code>.
+            <br />
+            Lain-lain username = user biasa.
+          </p>
+        )}
+
+        <form onSubmit={handleSubmit} className="auth-form">
+          <div className="auth-field">
+            <label className="auth-label">Username</label>
             <input
-              type="email"
-              className="form-control"
-              placeholder="you@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              className="auth-input"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
             />
           </div>
 
-          <div className="mb-3 text-start">
-            <label className="form-label">Password</label>
+          <div className="auth-field">
+            <label className="auth-label">Password</label>
             <input
               type="password"
-              className="form-control"
-              placeholder="••••••••"
+              className="auth-input"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              required
             />
           </div>
 
-          <button type="submit" className="btn btn-primary w-100 mt-2">
-            Login / Sign Up
+          {mode === "signup" && (
+            <div className="auth-field">
+              <label className="auth-label">Confirm Password</label>
+              <input
+                type="password"
+                className="auth-input"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+              />
+            </div>
+          )}
+
+          {error && <div className="auth-error">{error}</div>}
+
+          <button type="submit" className="auth-submit-btn">
+            {mode === "login" ? "Login" : "Create account"}
           </button>
         </form>
-
-        <small className="text-muted d-block mt-3">
-          * Demo only – any email & password will work.
-        </small>
       </div>
     </div>
   );
-};
-
-export default LoginPage;
+}
