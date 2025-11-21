@@ -12,7 +12,7 @@ import {
 import ProductList from "./components/ProductList";
 import ProductDetail from "./components/ProductDetail";
 import CartPage from "./components/CartPage";
-import LoginPage from "./components/LoginPage"; // pastikan file ni wujud
+import LoginPage from "./components/LoginPage";
 import AdminProducts from "./pages/AdminProducts";
 
 import { Product } from "./types";
@@ -47,6 +47,7 @@ function AppShell() {
   const isAdminPage = location.pathname.startsWith("/admin");
   const isLoginPage = location.pathname === "/login";
   const isHomePage = location.pathname === "/";
+  const isCartPage = location.pathname.startsWith("/cart");
 
   const handleAddToCart = (product: Product) => {
     setCart((prev) => [...prev, product]);
@@ -67,7 +68,7 @@ function AppShell() {
     setCart([]);
   };
 
-  // ✅ Welcome screen hanya di homepage ("/")
+  // Welcome screen hanya di home page
   if (showWelcome && isHomePage) {
     return (
       <div className="welcome-container">
@@ -90,17 +91,20 @@ function AppShell() {
     );
   }
 
+  const showCategories =
+    isHomePage && !isAdminPage && !isLoginPage && !isCartPage;
+
   return (
     <>
-      {/* ✅ HIDE NAVBAR KAT LOGIN PAGE */}
+      {/* NAVBAR – disembunyikan di login page */}
       {!isLoginPage && (
         <nav className="navbar navbar-light bg-light px-3">
           <Link to="/" className="navbar-brand">
             My Drinks Café
           </Link>
 
-          {/* HANYA tunjuk category pill kalau BUKAN di admin page */}
-          {!isAdminPage && (
+          {/* kategori HANYA di home page */}
+          {showCategories && (
             <div className="nav-categories">
               {categories.map((cat) => (
                 <button
@@ -124,7 +128,6 @@ function AppShell() {
               </Link>
             )}
 
-            {/* Admin button hanya appear kalau user tu admin */}
             {isAdmin && (
               <Link to="/admin/products" className="btn btn-warning btn-sm">
                 Admin
@@ -147,7 +150,6 @@ function AppShell() {
         </nav>
       )}
 
-      {/* ✅ ROUTES – termasuk /login supaya tak ada error No routes matched */}
       <Routes>
         <Route
           path="/"

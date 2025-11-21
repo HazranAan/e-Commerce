@@ -1,10 +1,12 @@
 // src/api.ts
 import type { Product } from "./types";
+
+// Supaya boleh import { Product } dari "../api"
 export type { Product };
 
 export const API_BASE_URL = "http://127.0.0.1:8000";
 
-// 📦 Ambil semua produk
+// Ambil semua produk
 export async function getProducts(): Promise<Product[]> {
   const res = await fetch(`${API_BASE_URL}/api/products/`);
 
@@ -15,7 +17,7 @@ export async function getProducts(): Promise<Product[]> {
   return res.json();
 }
 
-// 📦 Ambil satu produk ikut id
+// Ambil satu produk ikut id
 export async function getProduct(id: number | string): Promise<Product> {
   const res = await fetch(`${API_BASE_URL}/api/products/${id}/`);
 
@@ -26,7 +28,7 @@ export async function getProduct(id: number | string): Promise<Product> {
   return res.json();
 }
 
-// ✚ Tambah produk baru
+// Tambah produk baru
 export async function createProduct(
   data: Omit<Product, "id">
 ): Promise<Product> {
@@ -43,13 +45,13 @@ export async function createProduct(
   return res.json();
 }
 
-// ✎ Update produk sedia ada
+// Update produk sedia ada
 export async function updateProduct(
   id: number | string,
-  data: Partial<Product>
+  data: Partial<Omit<Product, "id">>
 ): Promise<Product> {
   const res = await fetch(`${API_BASE_URL}/api/products/${id}/`, {
-    method: "PATCH", // kalau backend allow PUT juga takpe, PATCH lebih selamat
+    method: "PUT", // kalau backend guna PATCH, tukar ke "PATCH"
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   });
@@ -61,7 +63,7 @@ export async function updateProduct(
   return res.json();
 }
 
-// 🗑 Delete produk
+// Delete produk
 export async function deleteProduct(id: number | string): Promise<void> {
   const res = await fetch(`${API_BASE_URL}/api/products/${id}/`, {
     method: "DELETE",
